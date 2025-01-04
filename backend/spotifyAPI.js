@@ -7,9 +7,12 @@ export default function spotifyAPI(req) {
   let spotifyAPI = new SpotifyWebApi({
     clientId: process.env.NEXT_PUBLIC_CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    redirectUri: process.env.NEXT_PUBLIC_REDIRECT_URL
+    redirectUri: process.env.NEXT_PUBLIC_REDIRECT_URL,
   });
 
-  spotifyAPI.setAccessToken({ cookies }.cookies['ms-user-code'] || '');
+  const token = cookies["ms-user-code"];
+  console.log("Access token set in Spotify API:", token);
+
+  spotifyAPI.setAccessToken(token || "");
   return spotifyAPI;
 }

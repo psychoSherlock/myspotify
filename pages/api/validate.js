@@ -1,22 +1,27 @@
 import spotifyAPI from "../../backend/spotifyAPI";
 
 export default async function validateAPI(req, res) {
+  console.log("Validating token...");
+
   let spotify = spotifyAPI(req);
 
-  await spotify.getMe().then((data) => {
+  try {
+    const data = await spotify.getMe();
     let resBody = data.body;
-    /**
-     * API call to Spotify
-     * @param resBody.id
-     * @param resBody.display_name
-     * @param resBody.images
-     */
+
+    console.log("Token validation successful:", resBody);
+
     res.status(200).json({
-      'id': resBody.id,
-      'name': resBody.display_name,
-      'image': resBody.images.length === 0 ? '' : resBody.images[0].url
+      id: resBody.id,
+      name: resBody.display_name,
+      image: resBody.images.length === 0 ? "" : resBody.images[0].url,
     });
-  }, () => {
+  } catch (error) {
+    console.error("Token validation failed:", error);
+    console.error(
+      "Error details:",
+      error.response ? error.response.data : error.message
+    );
     res.status(401).json("Invalid token");
-  });
+  }
 }
